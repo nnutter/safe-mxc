@@ -7,6 +7,19 @@
 //! discovery (git, Homebrew, `PATH` scans) lives in the CLI; filesystem
 //! probes here are limited to `is_dir`/`canonicalize` checks.
 
+use std::path::Path;
+
+/// Keeps paths that exist on the host.
+///
+/// Mirrors `safe-ng` passing only existing grants to safehouse on macOS:
+/// the Seatbelt family rejects grants for missing host paths.
+pub fn existing_paths(paths: Vec<String>) -> Vec<String> {
+    paths
+        .into_iter()
+        .filter(|path| Path::new(path).exists())
+        .collect()
+}
+
 /// Home-relative paths granted read-only.
 pub const READ_ONLY_HOME_PATHS: &[&str] = &[
     "bin",

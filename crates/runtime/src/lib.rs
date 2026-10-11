@@ -97,6 +97,14 @@ pub fn build_request(
         .filter(|path| !path.is_empty())
         .cloned()
         .collect();
+    // The Seatbelt family rejects grants for missing host paths, so on
+    // macOS only existing paths are granted. Linux keeps every grant:
+    // the Bubblewrap backend tolerates absent paths like --bind-try.
+    #[cfg(target_os = "macos")]
+    let (readwrite, readonly) = (
+        safe_policy::existing_paths(readwrite),
+        safe_policy::existing_paths(readonly),
+    );
     request.filesystem = Some(FilesystemPolicy {
         readwrite_paths: readwrite,
         readonly_paths: readonly,
