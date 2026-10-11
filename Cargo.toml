@@ -1,0 +1,16 @@
+[package]
+name = "safe-mxc"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "safe-mxc"
+path = "src/main.rs"
+
+[workspace]
+members = ["crates/policy", "crates/runtime"]
+
+[dependencies]
+safe-policy = { path = "crates/policy" }
+safe-runtime = { path = "crates/runtime" }
+anyhow = "1"
