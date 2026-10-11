@@ -12,6 +12,10 @@ run = "cargo fmt --all"
 description = "Run blackbox functional tests"
 run = "cargo test"
 
+[tasks.install]
+description = "Install the safe-mxc binary"
+run = "cargo install --path ."
+
 [tasks.stop]
 description = "On-stop: format and test"
 depends = ["fmt", "test"]
