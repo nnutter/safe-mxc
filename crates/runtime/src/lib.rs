@@ -194,9 +194,33 @@ fn run_with_pty(request: v1::ContainerRequest) -> anyhow::Result<i32> {
         },
     )?;
 
+    let process = std::sync::Arc::new(process);
     if let Ok(writer) = process.take_writer() {
         std::thread::spawn(|| pump_stdin_to_pty(writer));
     }
+    // Track terminal resizes until the child exits. Polling keeps this
+    // dependency-free; the thread ends itself once the child is gone.
+    std::thread::spawn({
+        let process = process.clone();
+        let mut last = (rows, cols);
+        move || loop {
+            std::thread::sleep(std::time::Duration::from_millis(200));
+            if !matches!(process.try_wait(), Ok(None)) {
+                break;
+            }
+            if let Some(size) = terminal_size() {
+                if size != last {
+                    last = size;
+                    let _ = process.resize(v1::MxcPtySize {
+                        rows: size.0,
+                        cols: size.1,
+                        pixel_width: 0,
+                        pixel_height: 0,
+                    });
+                }
+            }
+        }
+    });
     let mut reader = process.try_clone_reader()?;
     let pump = std::thread::spawn(move || {
         let mut output = std::io::stdout().lock();
