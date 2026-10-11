@@ -225,7 +225,6 @@ fn main() {
     }
 
     let sandbox_gh = Path::new(&home).join(safe_policy::SANDBOX_GH_CONFIG);
-    let host_gh = Path::new(&home).join(".config/gh");
     let sandbox_gh_text = sandbox_gh.to_string_lossy().into_owned();
     for denied in safe_policy::host_gh_config_paths(&home) {
         if safe_policy::path_is_within(&sandbox_gh_text, &denied)
@@ -234,8 +233,6 @@ fn main() {
             die("sandbox gh config must be separate from ~/.config/gh");
         }
     }
-    let _ = host_gh;
-
     let brew_missing = std::process::Command::new("brew")
         .arg("--version")
         .output()

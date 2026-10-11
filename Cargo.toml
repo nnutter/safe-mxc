@@ -13,4 +13,3 @@ members = ["crates/policy", "crates/runtime"]
 [dependencies]
 safe-policy = { path = "crates/policy" }
 safe-runtime = { path = "crates/runtime" }
-anyhow = "1"
