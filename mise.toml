@@ -1,0 +1,21 @@
+[tools]
+rust = { version = "latest", mr_boxington = true, components = ["rustfmt"] }
+mr-boxington = "latest"
+gh = "latest"
+hk = "latest"
+
+[tasks.fmt]
+description = "Format all code"
+run = "cargo fmt --all"
+
+[tasks.test]
+description = "Run blackbox functional tests"
+run = "cargo test"
+
+[tasks.install]
+description = "Install the safe-mxc binary"
+run = "cargo install --path ."
+
+[tasks.stop]
+description = "On-stop: format and test"
+depends = ["fmt", "test"]
