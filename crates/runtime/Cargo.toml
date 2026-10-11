@@ -8,3 +8,4 @@ safe-policy = { path = "../policy" }
 mxc-sdk = "1.0.0"
 anyhow = "1"
 tokio = { version = "1", features = ["full"] }
+libc = "0.2.190"
